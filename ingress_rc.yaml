@@ -86,7 +86,7 @@ spec:
             scheme: HTTP
           initialDelaySeconds: 10
           timeoutSeconds: 1
-        # use downward API
+        # Pass pod fields as environment variables
         env:
           - name: POD_NAME
             valueFrom:
@@ -101,8 +101,6 @@ spec:
           hostPort: 80
         - containerPort: 443
           hostPort: 443
-        # we expose 18080 to access nginx stats in url /nginx-status
-        # this is optional
         - containerPort: 18080
           hostPort: 18080
         args:

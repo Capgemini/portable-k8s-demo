@@ -1,0 +1,13 @@
+---
+platform: linux
+
+inputs: 
+  - name: ops-repo
+
+params:
+  TEAMID: teamid
+  KOPS_STATE_STORE: "s3://teamid-store"
+  NAME: example.com
+
+run:
+  path: ops-repo/ci/scripts/server_deploy.sh

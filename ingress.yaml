@@ -1,0 +1,47 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: kibana-ingress
+  namespace: kube-system
+
+spec:
+  rules:
+  - host: kibana-logging.example.com
+    http:
+      paths:
+      - backend:
+          serviceName: kibana-logging
+          servicePort: 5601
+        path: /
+
+  - host: elasticsearch.example.com
+    http:
+      paths:
+      - backend:
+          serviceName: elasticsearch-logging
+          servicePort: 9200
+        path: /
+
+  - host: msvc1.example.com
+    http:
+      paths:
+      - backend:
+          serviceName: msvc1
+          servicePort: 8899
+        path: /
+
+  - host: msvc2.example.com
+    http:
+      paths:
+      - backend:
+          serviceName: msvc2
+          servicePort: 8888
+        path: /
+
+  - host: monitoring-grafana.example.com
+    http:
+      paths:
+      - backend:
+          serviceName: monitoring-grafana
+          servicePort: 80
+        path: /

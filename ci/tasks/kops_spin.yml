@@ -1,0 +1,12 @@
+---
+platform: linux
+
+inputs: 
+  - name: ops-repo
+
+params:
+  TEAMID: teamid
+  HZID: Z1MIGLAQWYDET
+
+run:
+  path: ops-repo/ci/scripts/spin.sh

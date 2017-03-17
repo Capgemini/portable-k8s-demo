@@ -1,0 +1,105 @@
+resources:
+  - name: ops-repo
+    type: git
+    source:
+      uri: git@github.com:Capgemini/portable-k8s-demo.git
+      private_key: {{git-key}}    
+
+  - name: dev-client-repo
+    type: git
+    source:
+      uri: git@example.com:example/MicroServiceClient.git
+      branch: master
+      repository: ElectraBungalooClient
+      private_key: {{git-key}}
+
+  - name: dev-server-repo
+    type: git
+    source:
+      uri: git@example.com:example/MicroServiceServer.git
+      branch: master
+      repository: ElectraBungalooServer
+      private_key: {{git-key}}
+   
+  - name: client-docker
+    type: docker-image
+    source:
+      email: {{email}}
+      aws_access_key_id: {{aws-access-key-id}}
+      aws_secret_access_key: {{aws-secret-access-key}}
+      repository: example.docker-repo.com/teamid/client
+
+  - name: server-docker
+    type: docker-image
+    source:
+      email: {{email}}
+      aws_access_key_id: {{aws-access-key-id}}
+      aws_secret_access_key: {{aws-secret-access-key}}
+      repository: example.docker-repo.com/teamid/server
+
+  - name: kops-docker
+    type: docker-image
+    source:
+      email: {{email}}
+      aws_access_key_id: {{aws-access-key-id}}
+      aws_secret_access_key: {{aws-secret-access-key}}
+      repository: example.docker-repo.com/teamid/kube
+
+# Jobs start here
+
+jobs:
+  - name: client-tests
+    plan:
+    - get: dev-client-repo
+      trigger: true
+    - task: maven-tests
+      file: dev-client-repo/ci/tasks/buildui.yml
+
+  - name: server-tests
+    plan:
+      - get: dev-server-repo
+        trigger: true
+      - task: maven-tests
+        file: dev-server-repo/ci/tasks/buildapi.yml 
+
+  - name: client-build
+    plan:
+      - get: dev-client-repo
+        passed: [client-tests]
+        trigger: true
+      - put: client-docker
+        params:
+          build: dev-client-repo
+     
+  - name: server-build
+    plan:
+      - get: dev-server-repo
+        passed: [server-tests]
+        trigger: true
+      - put: server-docker
+        params:
+          build: dev-server-repo
+
+  - name: client-update
+    plan:
+    - aggregate:
+      - get: client-docker
+        passed: [client-build]
+        trigger: true
+      - get: kops-docker
+      - get: ops-repo
+    - task: client-rolling-update
+      image: kops-docker
+      file: ops-repo/ci/tasks/client_deploy.yml
+
+  - name: server-update
+    plan:
+    - aggregate:
+      - get: server-docker
+        passed: [server-build]
+        trigger: true
+      - get: kops-docker
+      - get: ops-repo
+    - task: server-rolling-update
+      image: kops-docker
+      file: ops-repo/ci/tasks/server_deploy.yml

@@ -1,0 +1,16 @@
+{
+    "Comment": "Update service DNS records",
+    "Changes": [
+        {
+            "Action": "UPSERT",
+            "ResourceRecordSet": {
+                "Type": "A",
+                "TTL": 300,
+                "ResourceRecords": [
+                    {
+                    }
+                ]
+            }
+        }
+    ]
+}

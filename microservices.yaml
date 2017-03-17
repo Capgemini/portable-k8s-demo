@@ -1,0 +1,66 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: msvc1
+  namespace: kube-system
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:  
+        ex1: ex1
+    spec:
+      containers:
+      - name: msvc1
+        image: example.docker-repo.com/teamid/server:latest
+        ports:
+        - containerPort: 8899
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: msvc1
+  namespace: kube-system
+  labels:
+    ex1: ex1
+spec:
+  ports:
+  - port: 8899
+  selector:
+    ex1: ex1
+---
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: msvc2
+  namespace: kube-system
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        ex2: ex2
+    spec:
+      containers:
+      - name: msvc2
+        image: example.docker-repo.com/teamid/client:latest
+        ports:
+        - containerPort: 8888
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: msvc2
+  namespace: kube-system
+  labels:
+    ex2: ex2
+spec:
+  ports:
+  - port: 8888
+  selector:
+    ex2: ex2

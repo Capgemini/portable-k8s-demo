@@ -1,0 +1,27 @@
+resources:
+  - name: ops-repo
+    type: git
+    source:
+      uri: git@github.com:Capgemini/portable-k8s-demo.git
+      private_key: {{git-key}}    
+
+  - name: kops-docker
+    type: docker-image
+    source:
+      email: {{email}}
+      aws_access_key_id: {{aws-access-key-id}}
+      aws_secret_access_key: {{aws-secret-access-key}}
+      repository: example.docker-repo.com/teamid/kube
+
+# Jobs start here
+
+jobs:
+  - name: kops-build
+    plan:
+    - aggregate:
+      - get: ops-repo
+      - get: kops-docker
+      trigger: true
+    - task: kops-spin
+      image: kops-docker
+      file: ops-repo/ci/tasks/kops_spin.yml

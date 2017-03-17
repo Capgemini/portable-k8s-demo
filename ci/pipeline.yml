@@ -1,10 +1,4 @@
 resources:
-  - name: ops-repo
-    type: git
-    source:
-      uri: git@github.com:Capgemini/portable-k8s-demo.git
-      private_key: {{git-key}}    
-
   - name: dev-client-repo
     type: git
     source:
@@ -27,7 +21,7 @@ resources:
       email: {{email}}
       aws_access_key_id: {{aws-access-key-id}}
       aws_secret_access_key: {{aws-secret-access-key}}
-      repository: example.docker-repo.com/teamid/client
+      repository: example.docker-repo.com/teamy/client
 
   - name: server-docker
     type: docker-image
@@ -35,15 +29,7 @@ resources:
       email: {{email}}
       aws_access_key_id: {{aws-access-key-id}}
       aws_secret_access_key: {{aws-secret-access-key}}
-      repository: example.docker-repo.com/teamid/server
-
-  - name: kops-docker
-    type: docker-image
-    source:
-      email: {{email}}
-      aws_access_key_id: {{aws-access-key-id}}
-      aws_secret_access_key: {{aws-secret-access-key}}
-      repository: example.docker-repo.com/teamid/kube
+      repository: example.docker-repo.com/teamy/server
 
 # Jobs start here
 
@@ -79,27 +65,3 @@ jobs:
       - put: server-docker
         params:
           build: dev-server-repo
-
-  - name: client-update
-    plan:
-    - aggregate:
-      - get: client-docker
-        passed: [client-build]
-        trigger: true
-      - get: kops-docker
-      - get: ops-repo
-    - task: client-rolling-update
-      image: kops-docker
-      file: ops-repo/ci/tasks/client_deploy.yml
-
-  - name: server-update
-    plan:
-    - aggregate:
-      - get: server-docker
-        passed: [server-build]
-        trigger: true
-      - get: kops-docker
-      - get: ops-repo
-    - task: server-rolling-update
-      image: kops-docker
-      file: ops-repo/ci/tasks/server_deploy.yml

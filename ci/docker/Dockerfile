@@ -14,5 +14,3 @@ RUN chmod +x kops
 RUN mv kops /usr/local/bin/
 RUN mkdir /root/.ssh
 RUN ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
-RUN mkdir /root/.aws
-ADD credentials /root/.aws/credentials

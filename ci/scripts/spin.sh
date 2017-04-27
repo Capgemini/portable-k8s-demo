@@ -5,10 +5,10 @@ cd $GOPATH
 
 # Check if bucket exists
 if [[ $(aws s3 ls | grep "$TEAMID") ]]; then
+        echo "Bucket already exists"
+else
         echo "[awscli] Create s3 bucket"
         aws s3api create-bucket --bucket $TEAMID-store --region eu-west-1 --cre$
-else
-        echo "Bucket already exists"
 fi
 export KOPS_STATE_STORE=s3://$TEAMID-store 
 

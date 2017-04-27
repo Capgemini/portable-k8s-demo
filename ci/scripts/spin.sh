@@ -3,8 +3,13 @@ set -e -u -x
 export GOPATH=$PWD/ops-repo
 cd $GOPATH
 
-echo "[awscli] Create s3 bucket"
-aws s3api create-bucket --bucket $TEAMID-store --region eu-west-1
+# Check if bucket exists
+if [[ $(aws s3 ls | grep "$TEAMID") ]]; then
+        echo "[awscli] Create s3 bucket"
+        aws s3api create-bucket --bucket $TEAMID-store --region eu-west-1 --cre$
+else
+        echo "Bucket already exists"
+fi
 export KOPS_STATE_STORE=s3://$TEAMID-store 
 
 echo "[kops] Creating AWS cluster"

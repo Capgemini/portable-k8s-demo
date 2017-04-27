@@ -73,7 +73,7 @@ spec:
         image: example.docker-repo.com/kube-mongo:beta
         env:
           - name: mongo_node_name
-            value: mongo-svc
+            value: mongo-svc-0
           - name: mongo_nodes_number
             value: "3"
           - name: mongo_replica_set_name
@@ -109,7 +109,7 @@ spec:
         image: example.docker-repo.com/kube-mongo:beta
         env:
           - name: mongo_node_name
-            value: mongo-svc
+            value: mongo-svc-1
           - name: mongo_nodes_number
             value: "3"
           - name: mongo_replica_set_name
@@ -146,7 +146,7 @@ spec:
         image: example.docker-repo.com/kube-mongo:beta
         env:
           - name: mongo_node_name
-            value: mongo-svc
+            value: mongo-svc-2
           - name: mongo_nodes_number
             value: "3"
           - name: mongo_replica_set_name
